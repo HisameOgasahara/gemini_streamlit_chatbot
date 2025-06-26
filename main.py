@@ -6,7 +6,6 @@ import json
 from datetime import datetime
 from google.generativeai.types import GenerateContentResponse, HarmCategory, HarmBlockThreshold
 import base64
-import streamlit as st
 from pathlib import Path  # 경로 관리를 위해 pathlib 추가
 
 # ----------------------------------------------------------------------
