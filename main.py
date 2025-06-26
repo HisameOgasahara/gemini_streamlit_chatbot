@@ -6,6 +6,8 @@ import json
 from datetime import datetime
 from google.generativeai.types import GenerateContentResponse, HarmCategory, HarmBlockThreshold
 import base64
+import streamlit as st
+from pathlib import Path  # 경로 관리를 위해 pathlib 추가
 
 # ----------------------------------------------------------------------
 # 초기 설정 및 세션 상태 초기화
@@ -139,6 +141,19 @@ def image_to_base64(image_file):
     img_bytes = image_file.getvalue()
     base64_encoded = base64.b64encode(img_bytes).decode()
     return f"data:image/png;base64,{base64_encoded}"
+
+# [변경점 1] 로그 파일을 읽고 캐싱하는 함수 추가
+@st.cache_data
+def load_changelog():
+    """CHANGELOG.md 파일을 읽어 그 내용을 반환합니다."""
+    # Path 객체를 사용하여 파일 경로를 안전하게 처리
+    changelog_path = Path(__file__).parent / "CHANGELOG.md"
+    try:
+        with changelog_path.open("r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return "업데이트 로그 파일을 찾을 수 없습니다."
+
 
 # ----------------------------------------------------------------------
 # 탭 렌더링 함수
@@ -416,7 +431,6 @@ def main():
     st.set_page_config(page_title="Gemini 챗봇", page_icon="🤖", layout="wide")
     initialize_session_state()
     
-    # [변경점] 아바타 크기 조정을 위한 CSS 주입
     avatar_size = st.session_state.ui_settings.get('avatar_size', 40)
     st.markdown(f"""
     <style>
@@ -427,19 +441,10 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
+    # [변경점 2] 하드코딩된 로그 대신 함수 호출로 변경
     with st.expander("🚀 업데이트 로그", expanded=False):
-        st.write("""
-        - **v1.3 (2024-05-24):**
-            - 로그 다운로드 기능 추가 (Raw/Text)
-            - 아바타 커스터마이징 기능 추가 (이미지 업로드 및 크기 조절)
-        - **v1.2 (2024-05-23):**
-            - 채팅 UI를 `st.chat_message`로 개선하여 사용자 경험 향상
-            - 로그에 `safetySettings` 등 상세 메타데이터 추가
-        - **v1.1 (2024-05-22):**
-            - 채팅 말풍선 위치 변경 및 LLM 원본 로그 상세화
-        - **v1.0 (2024-05-21):**
-            - 챗봇 초기 기능 구현
-        """)
+        changelog_content = load_changelog()
+        st.markdown(changelog_content, unsafe_allow_html=True) # 마크다운 형식으로 렌더링
         
     chat_tab, settings_tab, log_tab, ui_tab = st.tabs(
         ["💬 채팅", "⚙️ 모델 설정", "📜 로그", "🎨 UI 조정"]
