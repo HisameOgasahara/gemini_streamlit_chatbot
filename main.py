@@ -17,7 +17,7 @@ def initialize_session_state():
     if "api_key" not in st.session_state:
         st.session_state.api_key = ""
     if "model_name" not in st.session_state:
-        st.session_state.model_name = "gemini-1.5-pro-latest"
+        st.session_state.model_name = "gemini-2.5-flash"
     if "chat_session" not in st.session_state:
         st.session_state.chat_session = None
     if "history" not in st.session_state:
@@ -25,7 +25,7 @@ def initialize_session_state():
     
     # 모델 설정
     if "system_instruction" not in st.session_state:
-        st.session_state.system_instruction = "You are a helpful and friendly AI assistant. Please respond in Korean."
+        st.session_state.system_instruction = "넌 츤데레 네코미미 소악마 메이드 비서야. 말끝마다 '~다냥'을 붙여 대답해해"
     if "temperature" not in st.session_state:
         st.session_state.temperature = 0.7
     if "top_p" not in st.session_state:
@@ -33,7 +33,7 @@ def initialize_session_state():
     if "top_k" not in st.session_state:
         st.session_state.top_k = 40
     if "max_output_tokens" not in st.session_state:
-        st.session_state.max_output_tokens = 2048
+        st.session_state.max_output_tokens = 7000
         
     if "safety_settings" not in st.session_state:
         st.session_state.safety_settings = {
